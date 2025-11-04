@@ -73,6 +73,21 @@ This will fail if postgress db is not setup and configure properly, let us run t
 ```Bash
 docker-compose up --build
 ```
+Go to `exec` tab of postgres docker container to execute below listed commands to see the ingested data or use GUI tool like Dbeaver to connect to the postgres db.
+```Bash
+# To connect to the postgres db created on the fly using docker-compose
+psql -U postgres -d melb_weather_data
+# count query
+select count(1) from weather_data;
+# Analyst query
+SELECT sensorlocation, AVG(airtemperature) AS avg_temp, AVG(relativehumidity) AS avg_humidity
+FROM weather_data
+GROUP BY sensorlocation
+ORDER BY avg_temp DESC;
+```
+Below screenshot shows the out of the above mentioned commands.
+
+<img width="926" height="469" alt="image" src="https://github.com/user-attachments/assets/8655bbc0-256f-4844-b420-cc798b654b3f" />
 
 🧪 Testing
 Run all tests with:
