@@ -3,16 +3,24 @@
 A modular Python pipeline that fetches weather data from an external API, stores it in a PostgreSQL database, and ensures robust logging, schema creation, and batch inserts.
 
 ---
+## 🧭 Approach
+The `Melbourne Weather data Pipeline` was designed as a modular, production-grade pipeline to ingest, store, and validate weather data from external sources.The approach emphasizes scalability, testability, and team onboarding.
 
-## 🚀 Features
-
-- ✅ Fetches paginated weather data from external APIs
-- ✅ Filters weather data where location is null to provide quality data to analysts
-- ✅ Creates `weather_data` table on the fly (idempotent)
-- ✅ Inserts records using efficient batch inserts (`executemany`)
-- ✅ Skips duplicates with `ON CONFLICT DO NOTHING`
-- ✅ Modular logging and configuration
-- ✅ Pytest coverage for table creation and data insertion
+### 🔨 Key Design Principles
+- **Modular architecture**: All logic is split into reusable components (src/weather_api.py, src/weather_database.py, etc.) for clarity and maintainability.
+- **Automated schema creation**: The pipeline ensures the weather_data table is created if it doesn't exist, using idempotent SQL.
+- **Batch inserts with conflict handling**: Weather records are inserted using executemany() with ON CONFLICT DO NOTHING to avoid duplicates.
+- **Robust logging**: A centralized logger (weather_logger.py) tracks all operations, errors, and critical events.
+- **Test-first development**: Pytest-based unit tests validate both table creation and data insertion logic using mocks.
+- **Docker-ready**: A docker-compose.yml file provisions a local PostgreSQL instance for development and testing.
+- **Visual onboarding**: A project structure diagram and tree output are included to help new developers understand the layout quickly.
+### 📈 Workflow Summary
+- Weather data is fetched via API (e.g., paginated JSON using `limit` and `offset` api parameters as one API call gives 100 records maximum hence used `offset` parameter to paginate 100 records at a time to reach to 1000 records, also used `where` parameter to filter records where `senosorlocation` is null to provide quality data to Analysts).
+- Records are validated and transformed into insertable tuples.
+- The database table is created if missing.
+- All records are batch-inserted with conflict protection.
+- Logs are written for every major step.
+- Tests ensure correctness and reproducibility.
 
 ---
 
@@ -73,7 +81,7 @@ This will fail if postgress db is not setup and configure properly, let us run t
 ```Bash
 docker-compose up --build
 ```
-Go to `exec` tab of postgres docker container to execute below listed commands to see the ingested data or use GUI tool like Dbeaver to connect to the postgres db.
+Go to `Exec` tab of postgres docker container to execute below listed commands to see the ingested data or use GUI tool like Dbeaver to connect to the postgres db.
 ```Bash
 # To connect to the postgres db created on the fly using docker-compose
 psql -U postgres -d melb_weather_data
