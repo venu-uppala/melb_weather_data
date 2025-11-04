@@ -3,7 +3,9 @@ from src.weather_config import API_URL, RECORD_LIMIT
 from src.weather_logger import get_logger
 
 logger = get_logger()
-
+"""
+    Fetches weather data from external API, uses limit, offset and where parameters to paginate and bring in 1000 records with quality.
+"""
 def fetch_weather_data():
     all_data = []
     page_size = 100
