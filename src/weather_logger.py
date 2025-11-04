@@ -1,5 +1,7 @@
 import logging
-
+"""
+    Logger for this pipeline
+"""
 def get_logger(name="melb_weather_data"):
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
