@@ -11,7 +11,7 @@ def test_pipeline(mocker):
                         }
                 ]
                 
-    mocker.patch("src.main_flow.fetch_weather_data", return_value=mock_data)
-    mock_insert = mocker.patch("src.main_flow.insert_weather_data")
+    mocker.patch("src.pipeline.fetch_weather_data", return_value=mock_data)
+    mock_insert = mocker.patch("src.pipeline.insert_weather_data")
     run_weather_data_pipeline()
     mock_insert.assert_called_once_with(mock_data)
