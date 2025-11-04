@@ -1,6 +1,6 @@
 # 🌤 Melbourne Weather data Pipeline
 
-A modular Python pipeline that fetches weather data from an external API, stores it in a PostgreSQL database, and ensures robust logging, schema creation, and batch inserts.
+A modular Python pipeline that fetches weather data from an external API(https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/microclimate-sensors-data/records), stores it in a PostgreSQL database, and ensures robust logging, schema creation, and batch inserts.
 
 ---
 ## 🧭 Approach
@@ -21,6 +21,27 @@ The `Melbourne Weather data Pipeline` was designed as a modular, production-grad
 - All records are batch-inserted with conflict protection.
 - Logs are written for every major step.
 - Tests ensure correctness and reproducibility.
+
+---
+## 📌 Assumptions
+The following assumptions were made during the design and implementation of the pipeline:
+- 🗃️ **Database Availability**: A PostgreSQL instance is running and accessible with credentials provided via `weather_config.py`. The database is expected to support standard SQL features like ON CONFLICT DO NOTHING.
+- 📦 **Data Format**: Weather data is received as a list of dictionaries (JSON-like), each containing:
+    - device_id: string
+    - sensorlocation: string
+    - received_at: timestamp (ISO 8601 format)
+    - airtemperature: float
+    - relativehumidity: float
+- 🧪 **Data Integrity**: Incoming records are assumed to be pre-validated. The pipeline does not perform schema validation or type coercion beyond basic insert formatting.
+- 🔁 **Idempotency**: Duplicate records (same device_id and received_at) are safely ignored using ON CONFLICT DO NOTHING.
+- 🧱 **Table Schema Stability**: The schema for weather_data is fixed and not expected to change frequently. If schema evolution is needed, migrations should be handled manually or via Alembic.
+- 🧪 **Testing Environment**: Unit tests use mocks for database connections and do not require a live PostgreSQL instance. Integration tests are assumed to be run separately.
+- 🐳 **Local Development**: Docker is used to provision PostgreSQL locally via docker-compose.yml. Developers are expected to have Docker installed.
+- 🔐 **Secrets Management**: Credentials are stored in `weather_config.py` for simplicity. In production, secrets should be managed via environment variables or secret managers.
+- 📁 **Project Structure**: All source code resides in the src/ folder, and tests in tests/. This structure is assumed by test runners and documentation tools.
+- 📄 **Logging**: Logging is centralized via `weather_logger.py` and assumes a console-based output. No external logging service is integrated yet.
+- 🚫 **Performance Testing**: Load testing, stress testing, and benchmarking are explicitly out of scope for this version of the project. The pipeline is optimized for correctness and modularity, not throughput and it only ingests 1000 records which can be changed using RECORD_LIMIT configuration in `weather_config.py`, please refer API documentation for offset limits.
+
 
 ---
 
