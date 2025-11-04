@@ -3,10 +3,14 @@ from src.weather_config import DB_CONFIG
 from src.weather_logger import get_logger
 
 logger = get_logger()
-
+"""
+    Returns postgres database connection object.
+"""
 def get_connection():
     return psycopg2.connect(**DB_CONFIG)
-
+"""
+    Creates weather_data table if not exists in postgres
+"""
 def create_weather_table():
     try:
         with get_connection() as conn, conn.cursor() as cursor:
@@ -23,7 +27,9 @@ def create_weather_table():
             logger.info("Created weather_data table")
     except Exception as e:
         logger.critical(f"Failed to create weather_data table: {e}")
-
+"""
+    Inserts weather data records into weather_data postgres table
+"""
 def insert_weather_data(records):
     # Create weather table if not exists
     create_weather_table()
