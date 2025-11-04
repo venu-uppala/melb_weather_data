@@ -3,7 +3,11 @@ from src.weather_database import insert_weather_data
 from src.weather_logger import get_logger
 
 logger = get_logger()
-
+"""
+Driver program to perform:
+1) Fetch weather data
+2) Insert weather data into a postgres table
+"""
 def run_weather_data_pipeline():
     logger.info("Starting Weather data pipeline...")
     data = fetch_weather_data()
